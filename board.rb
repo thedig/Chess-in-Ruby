@@ -10,6 +10,12 @@ class Board
     @grid[row][col] = piece
   end
 
+  def remove(piece)
+    row, col = piece.position
+    self[row, col] = nil
+    piece.remove
+  end
+
   def [](posx, posy)
     row, col = posx, posy
     @grid[row][col]
@@ -20,8 +26,16 @@ class Board
   end
 
   def render_grid
-    @grid.each do |row|
-      p row
+    flipped_grid = @grid.dup.reverse
+    flipped_grid.each do |row|
+      row.each do |spot|
+        if spot.nil?
+          print "[__]"
+        else
+          print spot
+        end
+      end
+      puts
     end
   end
 
