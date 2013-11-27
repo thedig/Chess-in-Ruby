@@ -4,8 +4,47 @@ require_relative './board.rb'
 
 class ChessGame
 
+  HORIZONTAL_POSITIONS = {
+    :A => 0,
+    :B => 1,
+    :C => 2,
+    :D => 3,
+    :E => 4,
+    :F => 5,
+    :G => 6,
+    :H => 7
+    }
+
+
+
   def initialize
     @board = Board.new
+  end
+
+  def render
+    @board.render_grid
+  end
+
+  def move_piece(start, finish)
+    start = start.split("")
+    finish = finish.split("")
+
+
+    start[0] = HORIZONTAL_POSITIONS[start[0].to_sym]
+    start[1] = start[1].to_i - 1
+
+    start[0], start[1] = start[1], start[0]
+
+    finish[0] = HORIZONTAL_POSITIONS[finish[0].to_sym]
+    finish[1] = finish[1].to_i - 1
+
+    finish[0], finish[1] = finish[1], finish[0]
+
+    p start
+    p finish
+
+
+    @board.move(start, finish)
   end
 
 =begin
@@ -31,32 +70,9 @@ class ChessGame
 end
 
 
-b = Board.new
-b.set_up_board
-b.render_grid
-p b.all_pieces(:w).map(&:position)
-p b.king_location(:w)
-p b.in_check?(:w)
-b.move([0,0], [5,5])
-b.render_grid
-# rook = Rook.new([4,3], :b, b)
-# b[4, 3] = rook
-#
-# rook2 = Rook.new([6, 4], :b, b)
-# b[6,4] = rook2
-#
-# bishop = Bishop.new([2, 4], :b, b)
-# b[2, 4] = bishop
-#
-# knight = Knight.new([0,0], :b, b)
-# b[0, 0] = knight
-#
-#
-# b.render_grid
-#
-# piece = Pawn.new([1, 5], :w, b)
-# b[1, 5] = piece
-#
-# puts
-# puts
-# b.render_available_moves(piece)
+c = ChessGame.new
+c.render
+c.move_piece("D2", "D4")
+c.render
+
+

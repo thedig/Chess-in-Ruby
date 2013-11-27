@@ -2,6 +2,7 @@
 require_relative './slidingpiece'
 require_relative './steppingpiece'
 require_relative './pawn'
+require 'debugger'
 
 class Board
 
@@ -29,7 +30,7 @@ class Board
     alternate_color = color == :w ? :b : :w
     king_loc = king_location(color)
     all_pieces(alternate_color).any? do |piece|
-      piece.valid_moves.include?( king_loc )
+      piece.available_moves.include?( king_loc )
     end
   end
 
@@ -55,6 +56,18 @@ class Board
   end
 
   def move(start_pos, end_pos)
+    render_grid
+
+    piece  = self[start_pos[0], start_pos[1]]
+
+    move!(start_pos, end_pos)
+
+    raise "You can't move your piece into Check" if in_check?(piece.color)
+
+  end
+
+  def move!(start_pos, end_pos)
+
     raise "Position not in bounds" unless
       position_in_bounds?(start_pos) && position_in_bounds?(end_pos)
 
@@ -62,12 +75,13 @@ class Board
 
     raise "no piece at your start position" if piece.nil?
 
-    raise "you can't move your piece there" unless
+    raise "Not an available move" unless
       piece.available_moves.include?(end_pos)
 
-    piece.move(end_pos)
+    piece.update_position(end_pos)
     self[end_pos[0], end_pos[1]] = piece
     self[start_pos[0], start_pos[1]] = nil
+
   end
 
   def [](posx, posy)

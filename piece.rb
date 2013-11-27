@@ -14,7 +14,7 @@ class Piece
     @position = nil
   end
 
-  def move(new_position)
+  def update_position(new_position)
     @position = new_position
   end
 
@@ -28,7 +28,7 @@ class Piece
     available_moves.delete_if do |move|
       dup_board = board.deep_dup
 
-      dup_board.move(@position, move)
+      dup_board.move!(@position, move)
 
       dup_board.in_check?(@color)
     end
