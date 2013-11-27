@@ -3,6 +3,7 @@
 require_relative './board.rb'
 
 class ChessGame
+  attr_reader :board
 
   HORIZONTAL_POSITIONS = {
     :A => 0,
@@ -30,12 +31,12 @@ class ChessGame
     finish = finish.split("")
 
 
-    start[0] = HORIZONTAL_POSITIONS[start[0].to_sym]
+    start[0] = HORIZONTAL_POSITIONS[start[0].upcase.to_sym]
     start[1] = start[1].to_i - 1
 
     start[0], start[1] = start[1], start[0]
 
-    finish[0] = HORIZONTAL_POSITIONS[finish[0].to_sym]
+    finish[0] = HORIZONTAL_POSITIONS[finish[0].upcase.to_sym]
     finish[1] = finish[1].to_i - 1
 
     finish[0], finish[1] = finish[1], finish[0]
@@ -71,8 +72,18 @@ end
 
 
 c = ChessGame.new
+c.move_piece("f2", "f3")
+c.move_piece("e7", "e5")
+
+c.move_piece("g2", "g4")
+p c.board.in_check?(:w)
+p c.board.in_check_mate?(:w)
+
+c.move_piece("d8", "h4")
 c.render
-c.move_piece("D2", "D4")
-c.render
+p c.board.in_check?(:w)
+p c.board.in_check_mate?(:w)
+p c.board.render_available_moves(c.board[1, 7])
+
 
 

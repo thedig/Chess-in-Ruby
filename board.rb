@@ -6,24 +6,31 @@ require 'debugger'
 
 class Board
 
-  def initialize(grid = nil)
-    unless grid.nil?
-      @grid = grid
-    else
+  attr_accessor :grid
+
+  def initialize(new_grid = true)
+    if new_grid
       create_grid
       set_up_board
     end
   end
 
-  def deep_dup
+  def board_dup
     dup_grid = @grid.deep_dup
+
+    dup_board = Board.new(false)
+
     dup_grid.each do |row|
-      dup_grid.each do |piece|
-        piece = piece.dup
+      row.each_index do |index|
+        piece = row[index]
+        next if piece.nil?
+
+        row[index] = piece.class.new(piece.position.dup, piece.color, dup_board)
       end
     end
 
-    dup_board = Board.new(dup_grid)
+    dup_board.grid = dup_grid
+    dup_board
   end
 
   def in_check?(color)
@@ -32,6 +39,11 @@ class Board
     all_pieces(alternate_color).any? do |piece|
       piece.available_moves.include?( king_loc )
     end
+
+  end
+
+  def in_check_mate?(color)
+    in_check?(color) && all_pieces(color).all? { |piece| piece.valid_moves.empty? }
   end
 
   def king_location(color)
@@ -60,28 +72,25 @@ class Board
 
     piece  = self[start_pos[0], start_pos[1]]
 
+    raise "You can't move your piece into Check" if in_check?(piece.color)
+    raise "Position not in bounds" unless
+      position_in_bounds?(start_pos) && position_in_bounds?(end_pos)
+    raise "no piece at your start position" if piece.nil?
+    raise "Not an available move" unless piece.available_moves.include?(end_pos)
+
     move!(start_pos, end_pos)
 
-    raise "You can't move your piece into Check" if in_check?(piece.color)
 
   end
 
   def move!(start_pos, end_pos)
-
-    raise "Position not in bounds" unless
-      position_in_bounds?(start_pos) && position_in_bounds?(end_pos)
+    puts "start position is #{start_pos}"
+    puts "end position is #{end_pos}"
 
     piece  = self[start_pos[0], start_pos[1]]
-
-    raise "no piece at your start position" if piece.nil?
-
-    raise "Not an available move" unless
-      piece.available_moves.include?(end_pos)
-
     piece.update_position(end_pos)
     self[end_pos[0], end_pos[1]] = piece
     self[start_pos[0], start_pos[1]] = nil
-
   end
 
   def [](posx, posy)
