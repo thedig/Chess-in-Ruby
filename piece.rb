@@ -24,12 +24,42 @@ class Piece
   end
 
   def to_s
-    "P"
+    raise MethodUndefinedError.new("to_s method not yet implemented")
   end
 
   def position_in_bounds?(pos)
     pos[0].between?(0,7) && pos[1].between?(0,7)
   end
+end
+
+
+class Pawn < Piece
+
+  def initialize(position, color, board)
+    super(position, color, board)
+    determine_direction
+  end
+
+  def determine_direction
+    @direction = @color == :b ? -1 : 1
+  end
+
+  def valid_moves
+    initial_pawn_moves = [[1,0], [1, -1], [1,1]]
+    initial_pawn_moves.map! do |coord|
+      [(coord[0] * @direction) + @position[0], (coord[1] + @position[1])]
+    end
+
+    valid_moves = initial_pawn_moves.select do |coord|
+      position_in_bounds?(coord)
+    end
+
+  end
+
+  def to_s
+    "[P#{color}]"
+  end
+
 end
 
 
@@ -145,21 +175,20 @@ class Bishop < SlidingPiece
 end
 
 
-class SteppingPiece < Piece
-end
-
-class Pawn < Piece
-end
 
 b = Board.new
 rook = Rook.new([4,3], :w, b)
 b[4, 3] = rook
 
+rook2 = Rook.new([6, 4], :w, b)
+b[6,4] = rook2
+
+
 #
 b.render_grid
 #
-p = King.new([3, 3], :w, b)
-b[3, 3] = p
+p = Pawn.new([1, 7], :w, b)
+b[1, 7] = p
 
 puts
 puts
