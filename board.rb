@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 class Board
 
   def initialize
@@ -50,14 +52,34 @@ class Board
       end
       puts
     end
+  end
 
+  def set_up_board
+
+    8.times do |column|
+      case column
+      when 0, 7
+        self[0, column] = Rook.new([0, column], :w, self)
+        self[7, column] = Rook.new([7, column], :b, self)
+      when 1, 6
+        self[0, column] = Knight.new([0, column], :w, self)
+        self[7, column] = Knight.new([7, column], :b, self)
+      when 2, 5
+        self[0, column] = Bishop.new([0, column], :w, self)
+        self[7, column] = Bishop.new([7, column], :b, self)
+      when 3
+        self[0, column] = Queen.new([0, column], :w, self)
+        self[7, column] = Queen.new([7, column], :b, self)
+      when 4
+        self[0, column] = King.new([0, column], :w, self)
+        self[7, column] = King.new([7, column], :b, self)
+      end
+    end
   end
 end
 
 class Array
   def deep_dup
-    # Argh! Mario and Kriti beat me with a one line version?? Must
-    # have used `inject`...
 
     [].tap do |new_array|
       self.each do |el|
