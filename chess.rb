@@ -6,6 +6,27 @@ require_relative './slidingpiece.rb'
 require_relative './board.rb'
 
 class ChessGame
+
+  def initialize
+    @board = Board.new
+  end
+
+  def play
+
+    loop do
+      # ask player for move
+      # confirm valid move
+        # possible set of coordinates for piece?
+        # excluding moves that puts player in check
+      # make move
+      # confirm if board is in check / checkmate
+      # change player
+      # repeat
+
+    end
+
+  end
+
 end
 
 

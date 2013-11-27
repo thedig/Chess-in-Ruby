@@ -4,6 +4,7 @@ class Board
 
   def initialize
     create_grid
+    set_up_board
   end
 
   def []=(posx, posy, piece)
@@ -42,16 +43,20 @@ class Board
   end
 
   def render_with_labels(grid)
-    print "     " + "0   1   2   3   4   5   6   7"
     puts
-    puts
+    print "     " + "A   B   C   D   E   F   G   H"
+    puts puts
     grid.each_with_index do |row, r_index|
-      print "#{7-r_index}   "
+      print "#{8-r_index}   "
       row.each do |spot|
         print spot.nil? ? "[__]" : spot
       end
+      print "   #{8-r_index}"
       puts
     end
+    puts
+    print "     " + "A   B   C   D   E   F   G   H"
+    puts puts
   end
 
   def set_up_board
