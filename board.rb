@@ -75,7 +75,13 @@ class Board
         self[7, column] = King.new([7, column], :b, self)
       end
     end
+
+    8.times do |column|
+      self[1, column] = Pawn.new([1, column], :w, self)
+      self[6, column] = Pawn.new([6, column], :b, self)
+    end
   end
+
 end
 
 class Array
