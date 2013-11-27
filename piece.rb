@@ -44,16 +44,33 @@ class Pawn < Piece
     @direction = @color == :b ? -1 : 1
   end
 
+  def on_beginning_line?
+    return true if @color == :b && @position[0] == 6
+    return true if @color == :w && @position[0] == 1
+    false
+  end
+
   def valid_moves
-    initial_pawn_moves = [[1,0], [1, -1], [1,1]]
-    initial_pawn_moves.map! do |coord|
+    offsets = [[1,0], [1, -1], [1,1]]
+
+    potential_moves = offsets.map! do |coord|
       [(coord[0] * @direction) + @position[0], (coord[1] + @position[1])]
     end
 
-    valid_moves = initial_pawn_moves.select do |coord|
-      position_in_bounds?(coord)
-    end
+    potential_moves.select! { |coord| position_in_bounds?(coord) }
 
+    all_valid_moves = []
+
+    potential_moves.each_with_index do |move, index|
+      current_piece = @board[move[0], move[1]]
+      case index
+      when 0
+        all_valid_moves << move if current_piece.nil?
+      else
+        all_valid_moves << move if !current_piece.nil? && current_piece.color != @color
+      end
+    end
+    all_valid_moves
   end
 
   def to_s
@@ -177,21 +194,23 @@ end
 
 
 b = Board.new
-rook = Rook.new([4,3], :w, b)
+rook = Rook.new([4,3], :b, b)
 b[4, 3] = rook
 
-rook2 = Rook.new([6, 4], :w, b)
+rook2 = Rook.new([6, 4], :b, b)
 b[6,4] = rook2
 
 
 #
 b.render_grid
 #
-p = Pawn.new([1, 7], :w, b)
-b[1, 7] = p
+piece = Pawn.new([6, 5], :b, b)
+b[6, 5] = piece
 
 puts
 puts
-b.render_available_moves(p)
+b.render_available_moves(piece)
+
+puts piece.on_beginning_line?
 # puts p.class
 # p.valid_moves
