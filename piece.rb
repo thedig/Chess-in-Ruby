@@ -4,7 +4,7 @@ class MethodUndefinedError < StandardError
 end
 
 class Piece
-  attr_accessor :position, :color
+  attr_accessor :position, :color, :board
 
   def initialize(position, color, board)
     @position, @color, @board = position, color, board
@@ -18,8 +18,20 @@ class Piece
     @position = new_position
   end
 
+  def available_moves
+    raise MethodUndefinedError.new("available_moves method not yet implemented")
+  end
+
   def valid_moves
-    raise MethodUndefinedError.new("valid_moves method not yet implemented")
+    # available_moves
+
+    available_moves.delete_if do |move|
+      dup_board = board.deep_dup
+
+      dup_board.move(@position, move)
+
+      dup_board.in_check?(@color)
+    end
   end
 
   def to_s
@@ -33,30 +45,3 @@ end
 
 
 
-
-=begin
-
-b = Board.new
-rook = Rook.new([4,3], :b, b)
-b[4, 3] = rook
-
-rook2 = Rook.new([6, 4], :b, b)
-b[6,4] = rook2
-
-bishop = Bishop.new([2, 4], :b, b)
-b[2, 4] = bishop
-
-knight = Knight.new([0,0], :b, b)
-b[0, 0] = knight
-
-
-b.render_grid
-
-piece = Pawn.new([1, 5], :w, b)
-b[1, 5] = piece
-
-puts
-puts
-b.render_available_moves(piece)
-
-=end

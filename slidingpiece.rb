@@ -11,8 +11,8 @@ class SlidingPiece < Piece
   end
 
   #this is all moves, regardless of other pieces on the board
-  def valid_moves
-    all_valid_moves = []
+  def available_moves
+    all_available_moves = []
 
     offsets.each do |offset|
       prior_position = @position
@@ -21,12 +21,12 @@ class SlidingPiece < Piece
         new_pos = [(prior_position[0] + offset[0]), (prior_position[1] + offset[1])]
         break unless position_in_bounds?(new_pos)
         current_piece = @board[new_pos[0], new_pos[1]]
-        all_valid_moves << new_pos if current_piece.nil? || current_piece.color != self.color
+        all_available_moves << new_pos if current_piece.nil? || current_piece.color != self.color
         break if !current_piece.nil?
         prior_position = new_pos
       end
     end
-    all_valid_moves
+    all_available_moves
   end
 end
 

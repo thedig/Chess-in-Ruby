@@ -4,8 +4,8 @@ require_relative './piece.rb'
 
 class SteppingPiece < Piece
 
-  def valid_moves
-    all_valid_moves = []
+  def available_moves
+    all_available_moves = []
 
     offsets.each do |offset|
 
@@ -15,9 +15,9 @@ class SteppingPiece < Piece
       next unless position_in_bounds?(new_pos)
 
       current_piece = @board[new_pos[0], new_pos[1]]
-      all_valid_moves << new_pos if current_piece.nil? || current_piece.color != self.color
+      all_available_moves << new_pos if current_piece.nil? || current_piece.color != self.color
     end
-    all_valid_moves
+    all_available_moves
 
   end
 

@@ -1,8 +1,5 @@
 # encoding: utf-8
 
-require_relative './pawn.rb'
-require_relative './steppingpiece.rb'
-require_relative './slidingpiece.rb'
 require_relative './board.rb'
 
 class ChessGame
@@ -11,7 +8,10 @@ class ChessGame
     @board = Board.new
   end
 
+=begin
   def play
+
+    #store white king / black king positions in game to confirm check each turn?
 
     loop do
       # ask player for move
@@ -26,12 +26,18 @@ class ChessGame
     end
 
   end
+=end
 
 end
 
 
 b = Board.new
 b.set_up_board
+b.render_grid
+p b.all_pieces(:w).map(&:position)
+p b.king_location(:w)
+p b.in_check?(:w)
+b.move([0,0], [5,5])
 b.render_grid
 # rook = Rook.new([4,3], :b, b)
 # b[4, 3] = rook

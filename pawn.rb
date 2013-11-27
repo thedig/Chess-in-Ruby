@@ -19,7 +19,7 @@ class Pawn < Piece
     false
   end
 
-  def valid_moves
+  def available_moves
     offsets = [[1,0], [1, -1], [1,1], [2,0]]
 
     potential_moves = offsets.map! do |coord|
@@ -27,7 +27,7 @@ class Pawn < Piece
     end
     potential_moves.select! { |coord| position_in_bounds?(coord) }
 
-    all_valid_moves = []
+    all_available_moves = []
     next_move_open = false
 
     potential_moves.each_with_index do |move, index|
@@ -35,17 +35,17 @@ class Pawn < Piece
       case index
       when 0
         if current_piece.nil?
-          all_valid_moves << move
+          all_available_moves << move
           next_move_open = true
         end
       when 3
-        all_valid_moves << move if
+        all_available_moves << move if
           (current_piece.nil? && on_beginning_line?) && next_move_open
       else
-        all_valid_moves << move if !current_piece.nil? && current_piece.color != @color
+        all_available_moves << move if !current_piece.nil? && current_piece.color != @color
       end
     end
-    all_valid_moves
+    all_available_moves
   end
 
   def to_s
