@@ -26,19 +26,45 @@ class Board
   end
 
   def render_grid
-    flipped_grid = @grid.dup.reverse
-    flipped_grid.each do |row|
+    render_with_labels(@grid.deep_dup.reverse)
+  end
+
+  def render_available_moves(piece)
+    flipped_grid = @grid.deep_dup
+
+    piece.valid_moves.each do |valid_move|
+      flipped_grid[valid_move[0]][valid_move[1]] = "[**]"
+    end
+
+    render_with_labels(flipped_grid.reverse!)
+  end
+
+  def render_with_labels(grid)
+    print "     " + "0   1   2   3   4   5   6   7"
+    puts
+    puts
+    grid.each_with_index do |row, r_index|
+      print "#{7-r_index}   "
       row.each do |spot|
-        if spot.nil?
-          print "[__]"
-        else
-          print spot
-        end
+        print spot.nil? ? "[__]" : spot
       end
       puts
     end
-  end
 
+  end
+end
+
+class Array
+  def deep_dup
+    # Argh! Mario and Kriti beat me with a one line version?? Must
+    # have used `inject`...
+
+    [].tap do |new_array|
+      self.each do |el|
+        new_array << (el.is_a?(Array) ? el.deep_dup : el)
+      end
+    end
+  end
 end
 
 
