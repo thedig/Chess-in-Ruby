@@ -24,7 +24,6 @@ class Piece
 
   def valid_moves
     # available_moves
-    puts "checking valid moves for #{self.color} #{self.class} at #{@position}"
     available_moves.delete_if do |move|
       dup_board = board.board_dup
       dup_board.move!(@position, move)

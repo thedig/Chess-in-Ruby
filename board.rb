@@ -84,8 +84,8 @@ class Board
   end
 
   def move!(start_pos, end_pos)
-    puts "start position is #{start_pos}"
-    puts "end position is #{end_pos}"
+    # puts "start position is #{start_pos}"
+    # puts "end position is #{end_pos}"
 
     piece  = self[start_pos[0], start_pos[1]]
     piece.update_position(end_pos)
@@ -165,6 +165,11 @@ class Board
     pos[0].between?(0,7) && pos[1].between?(0,7)
   end
 
+  def won?
+    return true if is_check_mate?(:b) || is_check_mate?(:w)
+    false
+  end
+
 end
 
 class Array
@@ -178,11 +183,3 @@ class Array
 
   end
 end
-
-
-# a = Board.new
-#
-# #a[4, 3] = b
-#
-# #p a.[]=(4,3, 2)
-# a.render_grid

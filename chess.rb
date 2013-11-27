@@ -22,6 +22,34 @@ class ChessGame
     @board = Board.new
   end
 
+  def play
+    until won?
+      render
+
+    end
+      # ask player for move
+      # confirm valid move
+        # possible set of coordinates for piece?
+        # excluding moves that puts player in check
+      # make move
+      # confirm if board is in check / checkmate
+      # change player
+      # repeat
+
+  end
+
+  def request_input
+    puts 'Enter your start and end position in the following format: "A2, A4"'
+    begin
+      user_input = gets.chomp.split(", ")
+      start_coord = user_input[0]
+      end_coord = user_input[1]
+    rescue
+
+    end
+  end
+
+
   def render
     @board.render_grid
   end
@@ -83,7 +111,8 @@ c.move_piece("d8", "h4")
 c.render
 p c.board.in_check?(:w)
 p c.board.in_check_mate?(:w)
-p c.board.render_available_moves(c.board[1, 7])
+c.render
 
+# p c.board.render_available_moves(c.board[1, 7])
 
 
