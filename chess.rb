@@ -20,11 +20,23 @@ class ChessGame
 
   def initialize
     @board = Board.new
+    @player = :w
+  end
+
+  def switch_player
+    @player = @player == :w ? :b : :w
+  end
+
+  def player_name
+    "white player" if @player == :w
+    "black player" if @player == :b
   end
 
   def play
     until @board.won?
       render
+
+      puts "Current player: #{player_name}"
 
       begin
         user_input = request_input
@@ -35,6 +47,7 @@ class ChessGame
         retry
       end
 
+      switch_player
     end
 
     if user_input == "exit"
@@ -47,7 +60,7 @@ class ChessGame
     begin
       user_input = gets.chomp
 
-      return user_input if user_input == "exit" #otherwise shit gets annoying
+      return user_input if user_input == "exit"
 
       unless user_input =~ /^[a-h][1-8],\s* [a-h][1-8]$/
         raise 'Must enter both a start and end coordinate in the format "A2, A4"'
@@ -57,10 +70,6 @@ class ChessGame
       start_coord = user_input[0]
       end_coord = user_input[1]
 
-      # raise "Invalid input, each coordinate must begin with a letter, A - H" unless
-      #   start_coord[0] =~ /[a-h]{1}/i && end_coord[0] =~ /[a-h]{1}/i
-      # raise "Invalid input, each coordinate must end with an integer, 1 - 8" unless
-      #   start_coord[1] =~ /[1-8]{1}/ && end_coord[1] =~ /[1-8]{1}/
     rescue Exception => e
       puts e.message
       retry
