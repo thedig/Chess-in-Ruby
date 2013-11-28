@@ -72,22 +72,25 @@ class Board
 
     piece  = self[start_pos[0], start_pos[1]]
 
-    raise "You can't move your piece into Check" if in_check?(piece.color)
     raise "Position not in bounds" unless
       position_in_bounds?(start_pos) && position_in_bounds?(end_pos)
     raise "no piece at your start position" if piece.nil?
     raise "Not an available move" unless piece.available_moves.include?(end_pos)
 
-    move!(start_pos, end_pos)
-
-
+    if piece.confirm_move_not_in_check?(end_pos)
+      move!(start_pos, end_pos)
+    else
+      raise "You can't move your piece into Check"
+    end
   end
 
-  def move!(start_pos, end_pos)
-    # puts "start position is #{start_pos}"
-    # puts "end position is #{end_pos}"
 
+  def move!(start_pos, end_pos)
     piece  = self[start_pos[0], start_pos[1]]
+
+    other_piece = self[end_pos[0], end_pos[1]]
+    remove(other_piece) unless other_piece.nil?
+
     piece.update_position(end_pos)
     self[end_pos[0], end_pos[1]] = piece
     self[start_pos[0], start_pos[1]] = nil
@@ -121,11 +124,11 @@ class Board
     print "     " + "A   B   C   D   E   F   G   H"
     puts puts
     grid.each_with_index do |row, r_index|
-      print "#{8-r_index}   "
+      print "#{8 - r_index}   "
       row.each do |spot|
         print spot.nil? ? "[__]" : spot
       end
-      print "   #{8-r_index}"
+      print "   #{8 - r_index}"
       puts
     end
     puts

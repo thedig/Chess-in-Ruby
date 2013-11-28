@@ -28,17 +28,19 @@ class ChessGame
   end
 
   def player_name
-    "white player" if @player == :w
-    "black player" if @player == :b
+    return "White Player" if @player == :w
+    return "Black Player" if @player == :b
   end
 
   def play
     until @board.won?
       render
 
-      puts "Current player: #{player_name}"
+      puts "Current player: #{player_name}\n\n"
 
       begin
+        puts "Check!" if @board.in_check?(@player)
+
         user_input = request_input
         break if user_input == "exit"
         move_piece(user_input[0], user_input[1])
@@ -50,13 +52,21 @@ class ChessGame
       switch_player
     end
 
+    render
+
+    winning_player = @board.in_check_mate?(:w) ? "Black" : "White"
+    puts "#{winning_player} won the game!"
+
+
+
     if user_input == "exit"
-      puts "Goodbye, quitter!"
+      puts "\nGoodbye, quitter!"
     end
   end
 
   def request_input
     puts 'Enter your start and end position in the following format: "A2, A4"'
+
     begin
       user_input = gets.chomp
 
@@ -96,31 +106,18 @@ class ChessGame
 
     finish[0], finish[1] = finish[1], finish[0]
 
-    p start
-    p finish
-
-    @board.move(start, finish)
-  end
-
-=begin
-  def play
-
-    #store white king / black king positions in game to confirm check each turn?
-
-    loop do
-      # ask player for move
-      # confirm valid move
-        # possible set of coordinates for piece?
-        # excluding moves that puts player in check
-      # make move
-      # confirm if board is in check / checkmate
-      # change player
-      # repeat
-
+    if piece_matches_player_color?(start)
+      @board.move(start, finish)
+    else
+      raise "#{player_name} doesn't have a piece at that coordinate\n"
     end
-
   end
-=end
+
+  def piece_matches_player_color?(start)
+    piece = @board[start[0], start[1]]
+    return false if piece.nil?
+    piece.color == @player
+  end
 
 end
 

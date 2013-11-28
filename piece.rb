@@ -32,6 +32,13 @@ class Piece
     end
   end
 
+  def confirm_move_not_in_check?(new_position)
+    dup_board = board.board_dup
+    dup_board.move!(@position, new_position)
+    !dup_board.in_check?(@color)
+  end
+
+
   def to_s
     raise MethodUndefinedError.new("to_s method not yet implemented")
   end
