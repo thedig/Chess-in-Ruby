@@ -58,6 +58,6 @@ class Pawn < Piece
 
   def to_s
     #"[P#{color}]"
-     @color == :b ? "[♟ ]" : "[♙ ]"
+     "♟ "
   end
 end

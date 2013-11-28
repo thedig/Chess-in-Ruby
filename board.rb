@@ -2,17 +2,16 @@
 require_relative './slidingpiece'
 require_relative './steppingpiece'
 require_relative './pawn'
-require 'debugger'
+require 'colorize'
 
 class Board
 
   attr_accessor :grid
 
   def initialize(new_grid = true)
-    if new_grid
+      return unless new_grid
       create_grid
       set_up_board
-    end
   end
 
   def board_dup
@@ -68,19 +67,19 @@ class Board
   end
 
   def move(start_pos, end_pos)
-    render_grid
+    render_with_color
 
     piece  = self[start_pos[0], start_pos[1]]
 
-    raise "Position not in bounds" unless
+    raise ImproperBoardMove.new("Position not in bounds") unless
       position_in_bounds?(start_pos) && position_in_bounds?(end_pos)
-    raise "no piece at your start position" if piece.nil?
-    raise "Not an available move" unless piece.available_moves.include?(end_pos)
+    raise ImproperBoardMove.new("No piece at your start position") if piece.nil?
+    raise ImproperBoardMove.new("Not an available move") unless piece.available_moves.include?(end_pos)
 
     if piece.confirm_move_not_in_check?(end_pos)
       move!(start_pos, end_pos)
     else
-      raise "You can't move your piece into Check"
+      raise MoveIntoCheckError.new("You can't move your piece into Check")
     end
   end
 
@@ -134,6 +133,37 @@ class Board
     puts
     print "     " + "A   B   C   D   E   F   G   H"
     puts puts
+  end
+
+  def render_with_color
+    flipped_grid = @grid.deep_dup
+
+    print "   " + "A B C D E F G H".downcase
+    puts
+
+    8.times do |inner|
+      print "#{8 - inner}  "
+      8.times do |outer|
+        piece = flipped_grid[ (7-inner) ][outer]
+        to_print = piece.nil? ? "  " : piece.to_s
+        unless piece.nil?
+          piece_color = piece.color == :w ? :white : :black
+        else
+          piece_color = :black
+        end
+
+        if (inner + outer) % 2 == 0
+          print to_print.colorize(:color => piece_color, :background => :red)
+        else
+          print to_print.colorize(:color => piece_color, :background => :blue)
+        end
+
+      end
+      puts "  #{8 - inner}"
+    end
+    print "   " + "A B C D E F G H".downcase
+    puts
+    puts
   end
 
   def set_up_board

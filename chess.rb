@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require_relative './board.rb'
+require_relative './exceptions.rb'
 
 class ChessGame
   attr_reader :board
@@ -15,8 +16,6 @@ class ChessGame
     :G => 6,
     :H => 7
     }
-
-
 
   def initialize
     @board = Board.new
@@ -35,17 +34,18 @@ class ChessGame
   def play
     until @board.won?
       render
-
       puts "Current player: #{player_name}\n\n"
 
       begin
-        puts "Check!" if @board.in_check?(@player)
-
+        puts "Check!\n" if @board.in_check?(@player)
         user_input = request_input
         break if user_input == "exit"
         move_piece(user_input[0], user_input[1])
-      rescue Exception => e
-        puts e.message
+      rescue ImproperBoardMove => e
+        puts e.message + ", #{player_name}"
+        retry
+      rescue MoveIntoCheckError => e
+        puts e.message + ", #{player_name}"
         retry
       end
 
@@ -53,11 +53,8 @@ class ChessGame
     end
 
     render
-
     winning_player = @board.in_check_mate?(:w) ? "Black" : "White"
     puts "#{winning_player} won the game!"
-
-
 
     if user_input == "exit"
       puts "\nGoodbye, quitter!"
@@ -65,22 +62,24 @@ class ChessGame
   end
 
   def request_input
-    puts 'Enter your start and end position in the following format: "A2, A4"'
+    instruction = 'Enter your start and end position in the following format: "A2, A4"'
 
     begin
+      puts
+      puts instruction
       user_input = gets.chomp
 
       return user_input if user_input == "exit"
 
-      unless user_input =~ /^[a-h][1-8],\s* [a-h][1-8]$/
-        raise 'Must enter both a start and end coordinate in the format "A2, A4"'
+      unless user_input =~ /^[a-h][1-8],\s*[a-h][1-8]$/
+        raise InvalidInputError.new('Invalid Input Format')
       end
 
       user_input = user_input.split(/,\s*/)
       start_coord = user_input[0]
       end_coord = user_input[1]
 
-    rescue Exception => e
+    rescue InvalidInputError => e
       puts e.message
       retry
     end
@@ -89,28 +88,32 @@ class ChessGame
 
 
   def render
-    @board.render_grid
+    @board.render_with_color
   end
 
   def move_piece(start, finish)
+    start, finish = parse_coordinates(start,finish)
+
+    if piece_matches_player_color?(start)
+      @board.move(start, finish)
+    else
+      raise ImproperBoardMove.new("\n#{player_name} doesn't have a piece at that coordinate\n")
+    end
+  end
+
+  def parse_coordinates(start, finish)
     start = start.split("")
     finish = finish.split("")
 
     start[0] = HORIZONTAL_POSITIONS[start[0].upcase.to_sym]
     start[1] = start[1].to_i - 1
-
     start[0], start[1] = start[1], start[0]
 
     finish[0] = HORIZONTAL_POSITIONS[finish[0].upcase.to_sym]
     finish[1] = finish[1].to_i - 1
-
     finish[0], finish[1] = finish[1], finish[0]
 
-    if piece_matches_player_color?(start)
-      @board.move(start, finish)
-    else
-      raise "#{player_name} doesn't have a piece at that coordinate\n"
-    end
+    [start, finish]
   end
 
   def piece_matches_player_color?(start)

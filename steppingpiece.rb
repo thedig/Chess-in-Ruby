@@ -33,8 +33,7 @@ class King < SteppingPiece
   end
 
   def to_s
-    #"[K#{color}]"
-    @color == :b ? "[♚ ]" : "[♔ ]"
+    "♚ "
   end
 
 end
@@ -45,7 +44,6 @@ class Knight < SteppingPiece
   end
 
   def to_s
-    #"[N#{color}]"
-    @color == :b ? "[♞ ]" : "[♘ ]"
+    "♞ "
   end
 end

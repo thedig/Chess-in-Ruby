@@ -37,8 +37,7 @@ class Rook < SlidingPiece
   end
 
   def to_s
-    #"[R#{color}]"
-    @color == :b ? "[♜ ]" : "[♖ ]"
+    "♜ "
   end
 
 end
@@ -50,8 +49,7 @@ class Queen < SlidingPiece
   end
 
   def to_s
-    #"[Q#{color}]"
-    @color == :b ? "[♛ ]" : "[♕ ]"
+    "♛ "
   end
 
 end
@@ -63,8 +61,7 @@ class Bishop < SlidingPiece
   end
 
   def to_s
-    #"[B#{color}]"
-    @color == :b ? "[♝ ]" : "[♗ ]"
+    "♝ "
   end
 
 end
