@@ -49,8 +49,7 @@ class ChessGame
 
       return user_input if user_input == "exit" #otherwise shit gets annoying
 
-      raise 'Must enter both a start and end coordinate in the format "A2, A4"'
-        unless user_input =~ /[a-h][1-8],\s* [a-h][1-8]/
+      raise 'Must enter both a start and end coordinate in the format "A2, A4"' unless user_input =~ /[a-h][1-8],\s* [a-h][1-8]/
 
       user_input = user_input.split(/,\s*/)
       start_coord = user_input[0]
