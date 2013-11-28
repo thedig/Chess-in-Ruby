@@ -166,7 +166,7 @@ class Board
   end
 
   def won?
-    return true if is_check_mate?(:b) || is_check_mate?(:w)
+    return true if in_check_mate?(:b) || in_check_mate?(:w)
     false
   end
 
